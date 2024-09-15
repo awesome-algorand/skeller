@@ -1,0 +1,26 @@
+- name: Install Core Utilities
+  apt:
+    name:
+      - wget
+      - gpg
+      - coreutils
+    state: present
+  become: true
+- name: Install HashiCorp GPG Key
+  block:
+    - name: Install HashiCorp GPG Key
+      ansible.builtin.shell:
+        creates: /usr/share/keyrings/hashicorp-archive-keyring.gpg
+        cmd: wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+    - name: HashiCorp Repository
+      ansible.builtin.apt_repository:
+        repo: "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main"
+        state: present
+  become: true
+- name: Install Consul/Nomad
+  apt:
+    name:
+      - consul
+      - nomad
+    state: present
+  become: true

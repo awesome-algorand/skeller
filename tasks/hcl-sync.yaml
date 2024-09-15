@@ -1,0 +1,26 @@
+- name: Add Consul HCL
+  ansible.builtin.template:
+    src: "../templates/{{ template_path }}/consul.hcl"
+    dest: /etc/consul.d/consul.hcl
+    owner: consul
+    group: consul
+- name: Add Consul Systemd Override
+  ansible.builtin.template:
+    src: "../templates/consul.service"
+    dest: /lib/systemd/system/consul.service
+- name: Add Nomad HCL
+  ansible.builtin.template:
+    src: "../templates/{{ template_path }}/nomad.hcl"
+    dest: /etc/nomad.d/nomad.hcl
+    owner: nomad
+    group: nomad
+- name: Enable and Restart Consul
+  service:
+    name: consul
+    state: restarted
+    enabled: yes
+- name: Enable and Restart Nomad
+  service:
+      name: nomad
+      state: restarted
+      enabled: yes

@@ -1,0 +1,34 @@
+- name: Debug
+  hosts: all
+  become: true
+  tasks:
+    - name: Print architecture variables
+      ansible.builtin.debug:
+        msg: "Architecture: {{ inventory_hostname }}, Codename: {{ ansible_lsb.codename }}"
+- name: Bootstrap Compute Node
+  hosts: all
+  become: true
+  tasks:
+    - name: Upgrade
+      apt:
+        update_cache: yes
+        upgrade: "safe"
+      become: true
+    - name: HashiCorp
+      include_tasks: tasks/hashicorp.yaml
+- name: Scheduler Playbook
+  hosts: scheduler
+  become: true
+  tasks:
+    - name: Develop
+      include_tasks: tasks/hcl-sync.yaml
+- name: Provision Cluster
+  hosts: compute*
+  become: true
+  tasks:
+    # TODO: Use KVM and Dedicated Servers
+    - name: Docker
+      include_tasks: tasks/docker.yaml
+    - name: Compute
+      include_tasks: tasks/hcl-sync.yaml
+
