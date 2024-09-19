@@ -1,0 +1,47 @@
+---
+import {getJobs} from "../../lib/nomad/jobs";
+import {getSession} from "auth-astro/server";
+import Demo from "@/components/Demo.astro";
+import {SignIn, SignOut} from "auth-astro/components";
+import {Button} from "@/components/ui/button.tsx";
+import Page from '@/layouts/Page.astro'
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card"
+const session = await getSession(Astro.request);
+if (!session) {
+    return Astro.redirect("/");
+}
+
+const jobs = await getJobs(import.meta.env.SKELLER_SCHEDULER_URL);
+console.log(jobs)
+---
+
+<Page title="Jobs" description="Display Jobs">
+    <Card>
+        <CardHeader>
+            <div class="flex"><CardTitle className="flex-1">Manage Jobs</CardTitle><a href="/jobs/create"><Button variant="secondary">Add Job</Button></a></div>
+        </CardHeader>
+        <CardContent>
+            {jobs.map((j: any)=>{
+                return <Card>
+                    <CardHeader>
+                        <CardTitle>{j.Name}</CardTitle>
+                        <CardDescription>{j.ID}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <p>{j.Status}</p>
+                    </CardContent>
+                    <CardFooter>
+                        <a href={`/job/${j.ID}`}><Button variant="secondary">View</Button></a>
+                    </CardFooter>
+                </Card>
+            })}
+        </CardContent>
+    </Card>
+</Page>

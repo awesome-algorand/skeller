@@ -1,0 +1,24 @@
+---
+import {getSession} from "auth-astro/server";
+import Demo from "@/components/Demo.astro";
+import {SignIn, SignOut} from "auth-astro/components";
+import Page from '@/layouts/Page.astro'
+import {CreateJob} from '@/components/forms/create-job.tsx'
+import {Button} from "../../components/ui/button";
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "../../components/ui/card";
+const session = await getSession(Astro.request);
+if (!session) {
+    return Astro.redirect("/");
+}
+---
+
+<Page title="Jobs" description="Display Jobs">
+    <Card>
+        <CardHeader>
+            <CardTitle className="flex-1">Create Job</CardTitle>
+        </CardHeader>
+        <CardContent>
+            <CreateJob client:load/>
+        </CardContent>
+    </Card>
+</Page>

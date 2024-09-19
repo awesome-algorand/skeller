@@ -1,0 +1,139 @@
+---
+
+interface Props {
+    id?: string;
+    job?: any;
+}
+import { type ColumnDef } from "@tanstack/react-table"
+const { id, job } = Astro.props;
+
+if(!id && !job) {
+    throw new TypeError("id or job is required");
+}
+export type Payment = {
+    id: string
+    amount: number
+    status: "pending" | "processing" | "success" | "failed"
+    email: string
+}
+const columns: ColumnDef<Payment>[] = [
+    {
+        accessorKey: "status",
+        header: "Status",
+    },
+    {
+        accessorKey: "email",
+        header: "Email",
+    },
+    {
+        accessorKey: "amount",
+        header: "Amount",
+    },
+]
+// {
+//     "ID": "test",
+//     "ParentID": "",
+//     "Name": "test",
+//     "Namespace": "default",
+//     "Datacenters": [
+//     "*"
+// ],
+//     "NodePool": "default",
+//     "Multiregion": null,
+//     "Type": "service",
+//     "Priority": 50,
+//     "Periodic": false,
+//     "ParameterizedJob": false,
+//     "Stop": false,
+//     "Status": "running",
+//     "StatusDescription": "",
+//     "JobSummary": {
+//     "JobID": "test",
+//         "Namespace": "default",
+//         "Summary": {
+//         "servers": {
+//             "Queued": 0,
+//                 "Complete": 0,
+//                 "Failed": 0,
+//                 "Running": 1,
+//                 "Starting": 0,
+//                 "Lost": 0,
+//                 "Unknown": 0
+//         }
+//     },
+//     "Children": {
+//         "Pending": 0,
+//             "Running": 0,
+//             "Dead": 0
+//     },
+//     "CreateIndex": 104,
+//         "ModifyIndex": 108
+// },
+//     "CreateIndex": 104,
+//     "ModifyIndex": 111,
+//     "JobModifyIndex": 104,
+//     "SubmitTime": 1726526695289944600,
+//     "Meta": null
+// },
+// {
+//     "ID": "testzz",
+//     "ParentID": "",
+//     "Name": "testzz",
+//     "Namespace": "default",
+//     "Datacenters": [
+//     "*"
+// ],
+//     "NodePool": "default",
+//     "Multiregion": null,
+//     "Type": "service",
+//     "Priority": 50,
+//     "Periodic": false,
+//     "ParameterizedJob": false,
+//     "Stop": false,
+//     "Status": "running",
+//     "StatusDescription": "",
+//     "JobSummary": {
+//     "JobID": "testzz",
+//         "Namespace": "default",
+//         "Summary": {
+//         "servers": {
+//             "Queued": 0,
+//                 "Complete": 0,
+//                 "Failed": 0,
+//                 "Running": 1,
+//                 "Starting": 0,
+//                 "Lost": 0,
+//                 "Unknown": 0
+//         }
+//     },
+//     "Children": {
+//         "Pending": 0,
+//             "Running": 0,
+//             "Dead": 0
+//     },
+//     "CreateIndex": 255,
+//         "ModifyIndex": 258
+// },
+//     "CreateIndex": 255,
+//     "ModifyIndex": 261,
+//     "JobModifyIndex": 255,
+//     "SubmitTime": 1726534314714861000,
+//     "Meta": null
+// }
+---
+<div class="max-w-sm mx-auto mt-16">
+
+<form id="submit-form" class="max-w-sm mx-auto">
+    <label>
+        Enter Service Name:
+        <input id="name-input" required value={id} name="service-name" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"/>
+    </label>
+    <button>Submit</button>
+</form>
+
+<h1 class="mt-8">Events</h1>
+<div id="event-stream">
+    Loading...
+</div>
+
+</div>
