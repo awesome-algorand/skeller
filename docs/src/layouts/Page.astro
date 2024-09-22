@@ -1,0 +1,119 @@
+---
+import '@/styles/global.css'
+import { SITE_TITLE, SITE_DESCRIPTION } from '@/consts';
+import HeaderLink from "../components/HeaderLink.astro";
+import {getSession} from "auth-astro/server";
+const session = await getSession(Astro.request);
+
+interface Props {
+    title: string;
+    description: string;
+    image?: string;
+}
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
+const today = new Date();
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Global Metadata -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Primary Meta Tags -->
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={Astro.url} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(image, Astro.url)} />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={Astro.url} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={new URL(image, Astro.url)} />
+
+    <script is:inline>
+        const getThemePreference = () => {
+            if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+                return localStorage.getItem('theme');
+            }
+            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        };
+        const isDark = getThemePreference() === 'dark';
+        document.documentElement.classList[isDark ? 'add' : 'remove']('dark');
+
+        if (typeof localStorage !== 'undefined') {
+            const observer = new MutationObserver(() => {
+                const isDark = document.documentElement.classList.contains('dark');
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            });
+            observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+        }
+    </script>
+
+    <style>
+        html,body {
+            min-height: 100vh;
+            max-height: 100vh;
+            overflow: hidden;
+        }
+        nav a {
+            padding: 1em 0.5em;
+        }
+        nav a.active {
+            text-decoration: none;
+            border-bottom: 4px solid transparent;
+            border-bottom-color: 4px solid var(--accent);
+        }
+    </style>
+</head>
+<body class="flex flex-col">
+<header>
+    <nav class="flex justify-between items-center">
+        <a href="/" class="items-center flex md:w-48">
+            <img src="/skelly-32.png" class="min-w-8"/>
+            <h2 class="m-0 hidden md:block text-2xl">{SITE_TITLE}</h2>
+        </a>
+        <div>
+            <HeaderLink href="/">{session ? 'Profile' : 'Sign In'}</HeaderLink>
+            <HeaderLink href="/about">About</HeaderLink>
+            {session && <HeaderLink href="/jobs">Jobs</HeaderLink>}
+            <!--{session && <HeaderLink href="/services">Services</HeaderLink>}-->
+        </div>
+        <div class="social-links hidden md:flex md:w-48 justify-end">
+            <a href="https://github.com/awesome-algorand/skeller" target="_blank">
+                <span class="sr-only">Go to the Skeller GitHub repo</span>
+                <svg viewBox="0 0 16 16" aria-hidden="true" width="32" height="32"
+                ><path
+                        fill="currentColor"
+                        d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"
+                ></path></svg
+                >
+            </a>
+        </div>
+    </nav>
+</header>
+<main class="overflow-auto flex-1 m-auto w-full max-w-[1024px] px-8 md:px-24 md:py-4 scrollbar">
+    <slot/>
+</main>
+<footer>
+    &copy; {today.getFullYear()} Awesome Algorand.
+</footer>
+</body>
+</html>

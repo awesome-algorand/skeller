@@ -1,0 +1,29 @@
+---
+import Page from "../layouts/Page.astro";
+import { AlertCircle } from "lucide-react"
+import {Card, CardContent, CardHeader, CardTitle} from "../components/ui/card";
+import {
+    Alert,
+    AlertDescription,
+    AlertTitle,
+} from "@/components/ui/alert"
+
+const pathname = new URL(Astro.request.url).pathname
+---
+
+<Page title="Error" description="Styff">
+    <Card>
+        <CardHeader>
+            <CardTitle className="flex-1">404: Not found</CardTitle>
+        </CardHeader>
+        <CardContent>
+            <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>
+                    path: <strong>{pathname}</strong> not found
+                </AlertDescription>
+            </Alert>
+        </CardContent>
+    </Card>
+</Page>

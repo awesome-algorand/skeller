@@ -1,0 +1,25 @@
+---
+import {SITE_TITLE, SITE_DESCRIPTION} from '../consts';
+import Page from '../layouts/Page.astro';
+import { Markdown } from 'astro-remote';
+import README from '../../../README.md?raw'
+import {Button} from "../components/ui/button";
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "../components/ui/card";
+import Demo from "../components/Demo.astro";
+---
+
+<Page
+	title={`About | ${SITE_TITLE}`}
+	description={SITE_DESCRIPTION}
+>
+	<Card>
+		<CardHeader>
+			<div class="flex"><CardTitle className="flex-1">About</CardTitle></div>
+		</CardHeader>
+		<CardContent>
+			<p>
+				This is a demo of a simple Astro app. It uses a mix of static and dynamic content to show how Astro can be used to build a full-stack app.
+			</p>
+		</CardContent>
+	</Card>
+</Page>

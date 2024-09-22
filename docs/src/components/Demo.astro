@@ -1,0 +1,61 @@
+---
+---
+<div class="max-w-sm mx-auto mt-16">
+
+<form id="submit-form" class="max-w-sm mx-auto">
+    <label>
+        Enter Service Name:
+        <input id="name-input" required value="test" name="service-name" type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"/>
+    </label>
+    <button>Submit</button>
+</form>
+
+<h1 class="mt-8">Events</h1>
+<div id="event-stream">
+    Loading...
+</div>
+    <script>
+        import {postJobs} from "../lib/nomad/jobs";
+        import {getStream} from "../lib/nomad/event";
+        let serviceName = "test"
+        const nameInput = document.getElementById('name-input')
+        const serviceEvents = document.getElementById('event-stream')
+        const form = document.getElementById('submit-form')
+        nameInput!!.oninput = (e) => {
+            console.log('change')
+            serviceEvents!!.innerText = 'Loading...'
+        }
+        form!!.onsubmit = (e) => {
+            e.preventDefault()
+            const formData = new FormData(form!! as HTMLFormElement)
+            serviceName = formData.get('service-name')!!.toString()
+            fetch(`/demo/${serviceName}`).then((res) => res.json()).then((data) => {
+                console.log(data)
+                postJobs("/api/scheduler", data)
+            })
+
+            console.log(serviceName)
+        }
+
+        const stream = getStream("/api/scheduler", (d)=>{
+            if(typeof d.Events !== 'undefined'){
+                if(d.Events.length > 0) {
+                    for(let i = 0; i < d.Events.length; i++){
+                        if(d.Events[i].FilterKeys && d.Events[i].FilterKeys.includes(serviceName)) {
+                            if(serviceEvents!!.innerText === 'Loading...'){
+                                serviceEvents!!.innerText = ''
+                            }
+                            const p = document.createElement("p")
+                            p.className = "block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100"
+                            p.innerText = JSON.stringify(d.Events[i].Type, null, 2)
+                            serviceEvents!!.appendChild(p)
+                        }
+
+                    }
+                }
+            }
+        }, ()=>{
+            console.error('Closed')
+        })
+    </script>
+</div>
