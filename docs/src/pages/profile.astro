@@ -12,7 +12,7 @@ const user = await Astro.locals.currentUser();
     <Card>
     <CardHeader>
         <div class="flex"><CardTitle className="flex-1">Welcome</CardTitle>{user && <a href="/jobs/create"><Button variant="secondary">Add Job</Button></a>}</div>
-        <CardDescription>🧑‍🚀 Hello, {user ? user?.username : "Astronaut"}!</CardDescription>
+        <CardDescription>🧑‍🚀 Hello, {user ? user?.username : "skell"}!</CardDescription>
     </CardHeader>
     <CardContent>
 
