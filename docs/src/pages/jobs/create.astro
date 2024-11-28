@@ -1,14 +1,9 @@
 ---
-import {getSession} from "auth-astro/server";
-import Demo from "@/components/Demo.astro";
-import {SignIn, SignOut} from "auth-astro/components";
 import Page from '@/layouts/Page.astro'
 import {CreateJob} from '@/components/forms/create-job.tsx'
-import {Button} from "../../components/ui/button";
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "../../components/ui/card";
-const session = await getSession(Astro.request);
-if (!session) {
-    return Astro.redirect("/");
+import {Card, CardContent, CardHeader, CardTitle} from "../../components/ui/card";
+if (!Astro.locals.auth().userId) {
+    return Astro.redirect('/')
 }
 ---
 

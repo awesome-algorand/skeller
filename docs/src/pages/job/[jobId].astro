@@ -2,6 +2,7 @@
 import Page from "../../layouts/Page.astro";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "../../components/ui/card";
 import {getJobById} from "../../lib/nomad/jobs";
+import {Job} from '@/components/Job.tsx'
 const { jobId } = Astro.params;
 
 if(!jobId) {
@@ -14,7 +15,6 @@ if(!job) {
     Astro.response.status = 404;
     Astro.response.statusText = "Not found";
 }
-console.log(job)
 Astro.redirect("/jobs");
 ---
 
@@ -25,58 +25,7 @@ Astro.redirect("/jobs");
             <CardDescription>Status: {job.Status}</CardDescription>
         </CardHeader>
         <CardContent>
-            <h1 class="text-2xl mb-8">Log Stream</h1>
-            <div id="allocations">
-                Loading...
-            </div>
-            <h1 class="text-2xl mb-8">Events</h1>
-            <div id="event-stream">
-                Loading...
-            </div>
+            <Job job={job} client:only="react"/>
         </CardContent>
     </Card>
 </Page>
-<script>
-    import {getStream} from "../../lib/nomad/event";
-    import {getFsLogs} from "../../lib/nomad/client";
-    const serviceEvents = document.getElementById('event-stream')
-    const allocationsEl = document.getElementById('allocations')
-    const serviceName = window.location.pathname.split('/').pop()
-
-    const allocations = await fetch( `/api/scheduler/v1/job/${serviceName}/allocations`).then(r=>r.json())
-    const allocationId = allocations[0].ID
-    function runFsWatch(){
-        getFsLogs(`/api/scheduler`, {allocationId}, (d)=>{
-            const pre = document.createElement('pre')
-            pre.innerText = d
-            if(allocationsEl!!.innerHTML === 'Loading...') allocationsEl!!.innerHTML = ''
-            allocationsEl!!.append(pre)
-        }, ()=>{
-            console.log('Goodbye')
-        })
-    }
-
-    const stream = getStream("/api/scheduler", (d)=>{
-        if(typeof d.Events !== 'undefined'){
-            if(d.Events.length > 0) {
-                for(let i = 0; i < d.Events.length; i++){
-                    if(d.Events[i].FilterKeys && d.Events[i].FilterKeys.includes(serviceName)) {
-                        if(serviceEvents!!.innerText === 'Loading...'){
-                            serviceEvents!!.innerText = ''
-                        }
-                        const p = document.createElement("p")
-                        p.className = "block max-w-sm p-6 border border-gray-200 rounded-lg shadow"
-                        p.innerText = JSON.stringify(d.Events[i].Type, null, 2)
-                        serviceEvents!!.appendChild(p)
-                        if(d.Events[i].Type === 'AllocationUpdateDesiredStatus'){
-                            runFsWatch()
-                        }
-                    }
-
-                }
-            }
-        }
-    }, ()=>{
-        console.error('Closed')
-    })
-</script>

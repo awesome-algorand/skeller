@@ -1,9 +1,10 @@
 ---
 import '@/styles/global.css'
 import { SITE_TITLE, SITE_DESCRIPTION } from '@/consts';
-import HeaderLink from "../components/HeaderLink.astro";
-import {getSession} from "auth-astro/server";
-const session = await getSession(Astro.request);
+import HeaderLink from "@/components/HeaderLink.astro";
+
+
+const user = await Astro.locals.currentUser()
 
 interface Props {
     title: string;
@@ -91,9 +92,9 @@ const today = new Date();
             <h2 class="m-0 hidden md:block text-2xl">{SITE_TITLE}</h2>
         </a>
         <div>
-            <HeaderLink href="/">{session ? 'Profile' : 'Sign In'}</HeaderLink>
+            <HeaderLink href="/">{user ? 'Profile' : 'Sign In'}</HeaderLink>
             <HeaderLink href="/about">About</HeaderLink>
-            {session && <HeaderLink href="/jobs">Jobs</HeaderLink>}
+            {user && <HeaderLink href="/jobs">Jobs</HeaderLink>}
             <!--{session && <HeaderLink href="/services">Services</HeaderLink>}-->
         </div>
         <div class="social-links hidden md:flex md:w-48 justify-end">

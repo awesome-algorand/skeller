@@ -1,8 +1,5 @@
 ---
 import {getJobs} from "../../lib/nomad/jobs";
-import {getSession} from "auth-astro/server";
-import Demo from "@/components/Demo.astro";
-import {SignIn, SignOut} from "auth-astro/components";
 import {Button} from "@/components/ui/button.tsx";
 import Page from '@/layouts/Page.astro'
 import {
@@ -13,13 +10,10 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-const session = await getSession(Astro.request);
-if (!session) {
-    return Astro.redirect("/");
+if (!Astro.locals.auth().userId) {
+    return Astro.redirect('/')
 }
-
 const jobs = await getJobs(import.meta.env.SKELLER_SCHEDULER_URL);
-console.log(jobs)
 ---
 
 <Page title="Jobs" description="Display Jobs">

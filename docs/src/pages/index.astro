@@ -1,33 +1,42 @@
 ---
 import {SITE_TITLE, SITE_DESCRIPTION} from '../consts';
-import {getSession} from 'auth-astro/server';
-import {SignIn, SignOut} from 'auth-astro/components'
-
+import { SignedIn, SignedOut, UserButton, SignInButton } from "@clerk/astro/components";
 import Page from "../layouts/Page.astro";
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "../components/ui/card";
 import {Button} from "../components/ui/button";
-
-const session = await getSession(Astro.request)
+Astro.locals.auth()
+const user = await Astro.locals.currentUser();
 ---
 
-<Page title={session ? `${session.user?.name} @ ${SITE_TITLE}` : `Sign In | ${SITE_TITLE}`} description={SITE_DESCRIPTION}>
+<Page title={user ? `${user?.username} @ ${SITE_TITLE}` : `Sign In | ${SITE_TITLE}`} description={SITE_DESCRIPTION}>
     <Card>
     <CardHeader>
-        <div class="flex"><CardTitle className="flex-1">Welcome</CardTitle>{session && <a href="/jobs/create"><Button variant="secondary">Add Job</Button></a>}</div>
-        <CardDescription>🧑‍🚀 Hello, {session ? session.user?.name : "Astronaut"}!</CardDescription>
+        <div class="flex"><CardTitle className="flex-1">Welcome</CardTitle>{user && <a href="/jobs/create"><Button variant="secondary">Add Job</Button></a>}</div>
+        <CardDescription>🧑‍🚀 Hello, {user ? user?.username : "Astronaut"}!</CardDescription>
     </CardHeader>
     <CardContent>
 
     </CardContent>
     <h1 class="text-2xl my-6"></h1>
     <CardFooter>
-        {session ? (
-                <SignOut class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Sign Out</SignOut>
+        <nav>
+            <SignedOut>
+                <SignInButton mode="modal" />
+            </SignedOut>
+            <SignedIn>
+                <UserButton />
+            </SignedIn>
+        </nav>
+        {user ? (
+                <div class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Sign Out</div>
 
         ) : (
-                <SignIn class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" provider="github">Sign
+
+                <SignedIn>
+                <SignInButton class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Sign
                     In
-                </SignIn>
+                </SignInButton>
+                </SignedIn>
         )}
     </CardFooter>
     </Card>

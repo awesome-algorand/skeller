@@ -1,15 +1,13 @@
 ---
-import {getSession} from "auth-astro/server";
 import Demo from "../components/Demo.astro";
-import {SignIn, SignOut} from "auth-astro/components";
 import Page from '@/layouts/Page.astro'
-const session = await getSession(Astro.request);
-if (!session) {
-    return Astro.redirect("/");
+if (!Astro.locals.auth().userId) {
+    return Astro.redirect('/')
 }
+const user = await Astro.locals.currentUser()
 ---
 
 <Page title="Services" description="Display Jobs">
-    <h1>🧑‍🚀 Hello, {session.user?.name || "User"}!</h1>
+    <h1>🧑‍🚀 Hello, {user?.username || "User"}!</h1>
     <Demo/>
 </Page>

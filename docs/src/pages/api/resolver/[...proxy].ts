@@ -1,5 +1,4 @@
 import type { APIRoute } from "astro";
-import {getSession} from "auth-astro/server.ts";
 
 const getProxyUrl = (request: Request) => {
     const proxyUrl = new URL("http://localhost:5600");
@@ -8,12 +7,9 @@ const getProxyUrl = (request: Request) => {
     return new URL(requestUrl.pathname.replace(/^\/api\/resolver/, ''), proxyUrl);
 };
 
-export const ALL: APIRoute = async ({ request }) => {
-    const session = await getSession(request);
-    if (!session) {
-        return new Response("Unauthorized", {
-            status: 401,
-        });
+export const ALL: APIRoute = async ({ request, locals }) => {
+    if (!locals.auth().userId) {
+        return new Response('Unauthorized', { status: 401 })
     }
     const proxyUrl = getProxyUrl(request);
     const response = await fetch(proxyUrl.href, request);

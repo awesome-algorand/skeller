@@ -5,21 +5,23 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import react from '@astrojs/react';
 import tailwind from '@astrojs/tailwind';
-import auth from 'auth-astro';
-import node from '@astrojs/node';
 import cloudflare from '@astrojs/cloudflare';
+import clerk from "@clerk/astro";
+
 // https://astro.build/config
 export default defineConfig({
   site: process.env.SKELLER_URL,
   integrations: [
+    clerk(),
     sitemap(),
     react(),
     tailwind({
       applyBaseStyles: false,
     }),
-    auth(),
     mdx(),
   ],
   output: 'server',
-  adapter: cloudflare(),
+  adapter: cloudflare({
+      imageService:"cloudflare"
+  }),
 });

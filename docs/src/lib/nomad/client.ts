@@ -11,7 +11,7 @@ export function getFsLogs(
     onMessage: StreamCallback,
     onClose: VoidFunction
 ): Promise<any> {
-    return fetch(`${baseUrl}/v1/client/fs/logs/${data.allocationId}?follow=false&offset=${data.offset || 0}&origin=end&task=web&type=stdout&plain=true`)
+    return fetch(`${baseUrl}/v1/client/fs/logs/${data.allocationId}?follow=true&offset=${data.offset || 0}&origin=start&task=web&type=stdout&plain=true`)
         .then(readLogStream(onMessage))
         .then(onClose);
 }
