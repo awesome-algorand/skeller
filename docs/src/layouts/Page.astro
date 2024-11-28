@@ -68,7 +68,7 @@ const today = new Date();
         }
     </script>
 
-    <style>
+    <style is:global>
         html,body {
             min-height: 100vh;
             max-height: 100vh;
@@ -82,6 +82,104 @@ const today = new Date();
             border-bottom: 4px solid transparent;
             border-bottom-color: 4px solid var(--accent);
         }
+        :root {
+            --github-alert-default-color: rgb(208, 215, 222);
+            --github-alert-note-color: rgb(9, 105, 218);
+            --github-alert-tip-color: rgb(26, 127, 55);
+            --github-alert-important-color: rgb(130, 80, 223);
+            --github-alert-warning-color: rgb(191, 135, 0);
+            --github-alert-caution-color: rgb(207, 34, 46);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --github-alert-default-color: rgb(48, 54, 61);
+                --github-alert-note-color: rgb(31, 111, 235);
+                --github-alert-tip-color: rgb(35, 134, 54);
+                --github-alert-important-color: rgb(137, 87, 229);
+                --github-alert-warning-color: rgb(158, 106, 3);
+                --github-alert-caution-color: rgb(248, 81, 73);
+            }
+        }
+
+        .markdown-alert {
+            padding: 0.5rem 1rem;
+            margin-bottom: 16px;
+            border-left: 0.25em solid var(--github-alert-default-color);
+        }
+
+        .markdown-alert>:first-child {
+            margin-top: 0;
+        }
+
+        .markdown-alert>:last-child {
+            margin-bottom: 0;
+        }
+
+        .markdown-alert-note {
+            border-left-color: var(--github-alert-note-color);
+        }
+
+        .markdown-alert-tip {
+            border-left-color: var(--github-alert-tip-color);
+        }
+
+        .markdown-alert-important {
+            border-left-color: var(--github-alert-important-color);
+        }
+
+        .markdown-alert-warning {
+            border-left-color: var(--github-alert-warning-color);
+        }
+
+        .markdown-alert-caution {
+            border-left-color: var(--github-alert-caution-color);
+        }
+
+        .markdown-alert-title {
+            display: flex;
+            margin-bottom: 4px;
+            align-items: center;
+        }
+
+        .markdown-alert-title>svg {
+            margin-right: 8px;
+        }
+
+        .markdown-alert-note .markdown-alert-title {
+            color: var(--github-alert-note-color);
+        }
+
+        .markdown-alert-tip .markdown-alert-title {
+            color: var(--github-alert-tip-color);
+        }
+
+        .markdown-alert-important .markdown-alert-title {
+            color: var(--github-alert-important-color);
+        }
+
+        .markdown-alert-warning .markdown-alert-title {
+            color: var(--github-alert-warning-color);
+        }
+
+        .markdown-alert-caution .markdown-alert-title {
+            color: var(--github-alert-caution-color);
+        }
+        .octicon-info {
+            fill: var(--github-alert-note-color);
+        }
+        .octicon-tip {
+            fill: var(--github-alert-tip-color);
+        }
+        .octicon-important {
+            fill: var(--github-alert-important-color);
+        }
+        .octicon-warning {
+            fill: var(--github-alert-warning-color);
+        }
+        .octicon-caution {
+            fill: var(--github-alert-caution-color);
+        }
     </style>
 </head>
 <body class="flex flex-col">
@@ -92,8 +190,8 @@ const today = new Date();
             <h2 class="m-0 hidden md:block text-2xl">{SITE_TITLE}</h2>
         </a>
         <div>
-            <HeaderLink href="/">{user ? 'Profile' : 'Sign In'}</HeaderLink>
-            <HeaderLink href="/about">About</HeaderLink>
+            <HeaderLink href="/">About</HeaderLink>
+            <HeaderLink href="/profile">{user ? 'Profile' : 'Sign In'}</HeaderLink>
             {user && <HeaderLink href="/jobs">Jobs</HeaderLink>}
             <!--{session && <HeaderLink href="/services">Services</HeaderLink>}-->
         </div>

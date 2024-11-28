@@ -1,4 +1,4 @@
-# <img src="docs/public/skelly-64.png" width="32" alt="Skelly Logo"> Skeller
+# <img src="https://skeller.pages.dev/skelly-64.png" width="32" alt="Skelly Logo"> Skeller
 > Skeller is a skeleton project for deploying services on a Consul/Nomad cluster.
 
 ## Requirements

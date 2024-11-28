@@ -1,0 +1,43 @@
+---
+import {SITE_TITLE, SITE_DESCRIPTION} from '../consts';
+import { SignedIn, SignedOut, UserButton, SignInButton } from "@clerk/astro/components";
+import Page from "../layouts/Page.astro";
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "../components/ui/card";
+import {Button} from "../components/ui/button";
+Astro.locals.auth()
+const user = await Astro.locals.currentUser();
+---
+
+<Page title={user ? `${user?.username} @ ${SITE_TITLE}` : `Sign In | ${SITE_TITLE}`} description={SITE_DESCRIPTION}>
+    <Card>
+    <CardHeader>
+        <div class="flex"><CardTitle className="flex-1">Welcome</CardTitle>{user && <a href="/jobs/create"><Button variant="secondary">Add Job</Button></a>}</div>
+        <CardDescription>🧑‍🚀 Hello, {user ? user?.username : "Astronaut"}!</CardDescription>
+    </CardHeader>
+    <CardContent>
+
+    </CardContent>
+    <h1 class="text-2xl my-6"></h1>
+    <CardFooter>
+        <nav>
+            <SignedOut>
+                <SignInButton mode="modal" />
+            </SignedOut>
+            <SignedIn>
+                <UserButton />
+            </SignedIn>
+        </nav>
+        {user ? (
+                <div class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Sign Out</div>
+
+        ) : (
+
+                <SignedIn>
+                <SignInButton class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Sign
+                    In
+                </SignInButton>
+                </SignedIn>
+        )}
+    </CardFooter>
+    </Card>
+</Page>
